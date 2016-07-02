@@ -7,14 +7,14 @@ name: 星辰大海
 
 custom:
     category:
-        default: Default Category
-        another: Another Category
+        Android: Android Category
+        Ohter: Ohter Category
     categories:
-      - name:  default
-        title: Default Category
+      - name:  Android
+        title: Android Category
 
-      - name:  another
-        title: Another Category
+      - name:  Ohter
+        title: Ohter Category
 
     scrollingLoadCount: 2                          # 滚屏自动加载文章数量，“0”为关闭
 
@@ -24,7 +24,7 @@ meta:
         disqus: your-disqus-short-name              # Disqus缩略标识
         gcse: 000346898720731947188:13h55x32l0y     # Google自定义搜索标识ID
         github: https://github.com/LiuSai-Dream                # GitHub账号
-        gravatar:   # Gravatar头像标识
+        gravatar: 6a1132f4dcea2f6311b65561c8e85f90  # Gravatar头像标识
 
     disqus: disqus.com/embed.js                     # Disqus评论的JS地址
     gapi: http://www.google.com/jsapi               # Google API地址
