@@ -273,26 +273,23 @@ Message obtainMessage(int what, Object obj);
 
 - Add a task to the message queue:
 
-    ```
+```
     boolean post(Runnable r) // Runnable被封装为message
-    
     ...
-    ```
+```
 
 - Add a data object to the message queue:
 
-    ```
-    boolean sendMessage(Message msg)
-    
+```
+    boolean sendMessage(Message msg)    
     ...
-    ```
+```
 - Add Simple data object to the message queue:
     
-    ```
-    boolean sendEmptyMessage(int what) // what被封装为message
-    
+```
+    boolean sendEmptyMessage(int what) // what被封装为message    
     ...
-    ```
+```
     
 每个message都有一个时间参数：
 
@@ -304,8 +301,8 @@ Message obtainMessage(int what, Object obj);
 尽管可以指定*delay*和*uptime*，但是实际的执行时间仍然是不确定的，由于message的处理是顺序的，依赖于已有的message的执行进度和操作系统调度。
 
 插入操作并不是失败安全的，其可能遇到的错误：
-| Failure    | Error response    | Typical application problem    |
-| ------ | :------: | :-----: |
+| Failure | Error response | Typical application problem |
+| --------- | :------------: | :-------------: |
 | Message has no Handler  | RuntimeException | Message was created from a Message.obtain() method without a specifed Handler |
 |Message has already been dispatched and is being processed  | RuntimeException | The same message instance was inserted twice |
 | Looper has exited  |  return false |  Message is inserted after Looper.quit() has been called |
