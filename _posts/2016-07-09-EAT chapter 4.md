@@ -156,6 +156,7 @@ Message的生命周期可分为四个阶段：
     - Empty message:
         `Message m = Message.obtain();`
     - Data message:
+       
         ```
         Message m = Message.obtain(Handler h);
         Message m - Message.obtain(Handler h, int what);
@@ -163,6 +164,7 @@ Message的生命周期可分为四个阶段：
         Message m - Message.obtain(Handler h, int what, int arg1, int arg2);
         Message m - Message.obtain(Handler h, int what, int arg1, int arg2, Object o);
         ```
+    
     - Task message:
     `Message m = Message.obtain(Handler h, Runnable task);`
     - Copy constructor:
@@ -255,6 +257,7 @@ Handler既负责在**生产者线程**把message插入队列，同时负责在**
 ##### Message creation
 
 为了简化，Handler类提供了对象的工厂函数来创建Message类：
+
 ```
 Message obtainMessage(int what, int arg1, int arg2);
 Message obtainMessage();
@@ -284,6 +287,7 @@ Message obtainMessage(int what, Object obj);
     ...
     ```
 - Add Simple data object to the message queue:
+    
     ```
     boolean sendEmptyMessage(int what) // what被封装为message
     
