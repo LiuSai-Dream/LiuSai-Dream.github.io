@@ -23,7 +23,7 @@ meta:
         name: 刘赛
         disqus:               # Disqus缩略标识
         gcse: 000346898720731947188:13h55x32l0y     # Google自定义搜索标识ID
-        github: https://github.com/LiuSai-Dream                # GitHub账号
+        github: LiuSai-Dream                # GitHub账号
         gravatar: 6a1132f4dcea2f6311b65561c8e85f90  # Gravatar头像标识
 
     disqus: disqus.com/embed.js                     # Disqus评论的JS地址
