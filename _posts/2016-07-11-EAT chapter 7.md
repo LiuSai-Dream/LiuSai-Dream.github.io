@@ -20,7 +20,9 @@ category: Android
 ![lifecycle of thread](http://ww3.sinaimg.cn/mw690/63293ed1jw1f5q7l1qpd3j20gp0413yj.jpg)
 
 - *New* 在执行之前。该实例**并没有设置执行环境**，因此该线程并不比其他的实例对象要笨重。默认，构造器把新创建的线程赋予**创建者线程**所在的线程组，具有相同的优先级，从UI创建的线程属于相同的线程组，与UI具有相同的优先级。
+
 - *Runnable* 在`Thread.start()`调用之后，**设置了执行环境**。现在是可运行的状态，当调度器选择该线程执行的时候，会调用`run`方法。
+
 - *Blocked/Waitting* 阻塞状态。显式的使用：1. *Thread.sleep()*：线程sleep特定的时间，但是不释放持有的锁。2. *Thread.yield()*：放弃执行，让调度者选择下一个要执行的进程，但是下一个调度的也可能是该线程本身，也不会释放持有的锁。
 两者的区别：`sleep()`方法会给其他线程运行的机会，**不考虑其他线程的优先级**，因此会给较低优先级线程一个运行的机会，并且当前线程将转到**阻塞状态**； `yield()`只会给**相同优先级或者更高优先级**的线程一个运行的机会。当前优先级会转到**就绪状态**。
 
@@ -29,6 +31,7 @@ category: Android
 #### Interruptions
 
 有时，应用希望中断线程的执行。然而无法直接中断。但是线程是有*interruptd*的，该函数只是**请求**线程*terminate*，但是线程可以**不遵守**。该函数只是在*thread*内部设置一个标识，表示其为interrupted状态。线程必须自己**检查该标识**，以便更加优雅的退出，例如：
+
 ```
 public class SimpleThread extends Thread {
 
@@ -45,6 +48,7 @@ public class SimpleThread extends Thread {
 
 该interrupt flag同样被许多阻塞方法和库支持，一个当前**被阻塞的线程**在被*interrupted*的时候会抛出*InterruptedException*，线程可以在*catch*语句块中**清除资源**。当*InterruptedException*被抛出之后，*interrupted flag*会被**重置**，这可能会带来问题。
 一些处理方法：
+
 ```
 void myMethod() {
     try {
@@ -72,11 +76,13 @@ void myMethod() {
 `UncaughtExceptionHandler`接口可以附件到所有的线程或者个特定的线程中。
 
 *Thread global handler*
+
 ```
 static void setDefaultUncaughtExceptionHandler( Thread.UncaughtExceptionHandler handler );
 ```
 
 *Thread local handler*
+
 ```
 void setUncaughtExceptionHandler(Thread.UncaughtExceptionHandler handler);
 ```
@@ -90,6 +96,7 @@ void setUncaughtExceptionHandler(Thread.UncaughtExceptionHandler handler);
 Android 运行时在应用启动的时候，会附件一个进程全局**UncaughtExceptionHandler**。该*exception handler*会附加到所有的线程中，并且**任何一个线程**发生*unhandled exception* 的时候，其结果是：**该进程被杀掉**。
 
 默认的行为可以在全局上对所有线程进行更改也可以在特定的线程上进行更改。一般情况下，首先通过重写默认的运行时行为，然后把*exception*重定向到*runtime handler*:
+
 ```
 // Set new global handler
 Thread.setDefaultUncaughtExceptionHandler(new ErrorReportExceptionHandler());
@@ -136,6 +143,7 @@ public void uncaughtException(Thread thread, Throwable throwable) {
 下面列举了最常用的定义和开启*worker thread*的方式。
 
 ##### Anonymous inner class
+
 ```
 public class AnyObject {
     public void anyMethod() {
@@ -147,11 +155,13 @@ public class AnyObject {
     }
 }
 ```
+
 匿名内部类实现简单，但是其会持有外部类的引用。
 
 ##### Public thread
 
 通过独立的类来定义线程，而不是在运行该线程的类里面定义：
+
 ```
 class MyThread extends Thread {
     public void run() {
@@ -169,9 +179,11 @@ public class AnyObject {
 }
 
 ```
+
 独立的类不持有外部类的引用。
 
 ##### Static inner class thread definition
+
 ```
 public class AnyObject {
     static class MyThread extends Thread() {
@@ -189,6 +201,7 @@ public class AnyObject {
 }
 
 ```
+
 静态内部类持有外部类的*class*实例，而不是类实例。
 
 ##### Summary of options for therad definition
@@ -213,6 +226,7 @@ public class AnyObject {
 在新的*Activity*中从`onRetainNonConfigurationInstance`方法中得到对象。可以在`onCreate()`或者`onStart()`中调用，如果*Activity*不是因为配置改变，返回的值为null。
 
 下面的代码演示了因为配置改变在*activity*之间传递*thread*。
+
 ```
 public class ThreadRetainActivity extends Activity {
     

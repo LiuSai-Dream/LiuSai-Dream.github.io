@@ -61,6 +61,7 @@ worker thread的生命周期通常包含三步：
 ![tree of inner class](http://ww3.sinaimg.cn/mw690/63293ed1jw1f5p406bo6gj20gq05s0sv.jpg)
 
 示例：
+
 ```
 public class Outer {
 
@@ -84,6 +85,7 @@ public class Outer {
 
 静态内部类是外部对象**class**实例的成员。静态内部类持有外部对象**class**的引用，但是与外部类对象无关。（此处是**class**而不是类实例）
 ![static inner class](http://ww1.sinaimg.cn/mw690/63293ed1jw1f5p43arxfhj20gq05odfz.jpg)
+
 
 ```
 public class Outer {
@@ -111,6 +113,7 @@ public class Outer {
 > 可以看到，尽管使用了static inner class，但是仍然持有**Outer 实例引用**以及**Outer class实例引用**。 
 
 示例：
+
 ```
 public class Outer {
     
@@ -168,6 +171,7 @@ Android不止处理对象的生命周期，也处理部件的生命周期。**�
 
 #### Sending a data message
 *Outer*类持有*Handler*，并且*Handler*与创建*Outer*类的线程相连接：
+
 ```
 public class Outer {
     Handler handler = new Handler() {
@@ -184,10 +188,12 @@ public class Outer {
 }
 
 ```
+
 ![object reference when send data message](http://ww2.sinaimg.cn/mw690/63293ed1jw1f5p5c8sp4pj20gu074weo.jpg)
 
 #### Posting a task message
 使用*Runnable*相比于*Thread*，具有额外的*Outer*类的引用。
+
 ```
 public class Outer {
     Handler mHandler = new Handler() {
@@ -221,6 +227,7 @@ public class Outer {
 #### Use Weak References within static inner class
 
 静态内部类无法访问外部类的实例变量。为了需要访问外部类的实例变量，可以使用`java.lang.ref.WeakReference`来引用外部变量：
+
 ```
 public class Outer {
 
@@ -244,6 +251,7 @@ public class Outer {
 }
 
 ```
+
 在静态内部类中使用*weak reference*来引用外部类，但是*weak reference*并不是gc引用计数的一部分。
 
 #### Stop Worker Thread Execution

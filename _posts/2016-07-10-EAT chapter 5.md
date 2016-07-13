@@ -65,6 +65,7 @@ server端是并发执行的，client端是阻塞执行的。
 关于同步RPC的实例，在远程线程中返回线程名称：
 
 1. 在.aidl文件中定义接口-通信契约，该接口描述方法定义：
+
 ```
 interface ISynchronous {
     String getThreadNameFast();
@@ -73,6 +74,7 @@ interface ISynchronous {
     String getThreadNameUnblock();
 }
 ```
+
 包含*Proxy*和*Stub*内部类的java 接口使用aidl工具生成，server进程会重写*Stub*类来实现函数。
 
 ```
@@ -103,6 +105,7 @@ private final ISynchronous.Stub mBinder = new ISynchronous.Stub() {
 ```
 
 client进程可以通过server进程的 binder对象来得到*Proxy*实现。
+
 ```
 ISynchronous mISynchronous = ISynchronous.Stub.asInterface(binder);
 
@@ -125,6 +128,7 @@ ISynchronous mISynchronous = ISynchronous.Stub.asInterface(binder);
 异步RPC在AIDL中使用*oneway*关键字。可以被应用在interface level或者单独的方法：
 
 *Asynchronous interface*
+
 ```
 oneway interface IAsynchronousInterface {
     void method1();
@@ -133,6 +137,7 @@ oneway interface IAsynchronousInterface {
 ```
 
 *Asynchronous method*
+
 ```
 interface IAsynchronousInterface {
     oneway void method1();
@@ -149,6 +154,7 @@ interface IAsynchronous1 {
 ```
 
 server端实现远程接口的例子如下,在方法的最后，通过回调方法返回结果：
+
 ```
 IAsynchronous1.Stub mIAsynchronous1 = new IAsynchronous1.Stub() {
     
@@ -161,7 +167,9 @@ IAsynchronous1.Stub mIAsynchronous1 = new IAsynchronous1.Stub() {
 }
 
 ```
+
 在AIDL中定义的回调接口如下：
+
 ```
 interface IAsynchronousCallback {
     void handleResult(String name);
@@ -180,6 +188,7 @@ client需要从server端得到`Messenger`引用，步骤如下：
 
 #### One-Way communication
 下面的例子中，Service执行在server进程并且实现了*Messenger*，Activity执行在client进程并且发送*Message*到server。
+
 ```
 public class WorkerThreadServer extends Service {
     
@@ -233,6 +242,7 @@ public class WorkerThreadServer extends Service {
 ```
 
 client端，Activity绑定到server的Service，发送message：
+
 ```
 public class MessengerOneWayActivity extends Activity {
     private boolean mBound = false;
@@ -271,6 +281,7 @@ public class MessengerOneWayActivity extends Activity {
 跨进程传递的*Message*在`Message.repayTo`的参数中保持了原进程中*Messenger*的引用，这是*Message*可以承载的数据类型之一。该引用可以用来在不同进程的两个线程间创建two-way通信。
 
 下面的例子在activity和service之间创建了two-way通信。activity发送一个带有replyTo参数的message：
+
 ```
 public void onSendClick(View v) {
     if (mBound) {
@@ -291,7 +302,9 @@ public void onSendClick(View v) {
 }
 
 ```
+
 *Service*使用接收到的*Messenger*发送*Message*到*Activity*：
+
 ```
 public void run() {
     Looper.prepare();

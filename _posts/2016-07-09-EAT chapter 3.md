@@ -50,6 +50,7 @@ Binder线程用来**跨进程通信**。每个进程都会维护一个线程池�
 #### Finding Application Process Information
 运行的应用进程信息通过ADB shell中的`ps`命令来得到。
 其选项：
+
 - -t 显示进程中的线程信息
 - -x 显示运行在用户代码上的时间（utime）和系统代码上的时间（stime）
 - -p 显示优先级
@@ -75,6 +76,7 @@ linux kernel的调度是*completely fair scheduler*。结合**优先级**和**�
 
 - *priority*。线程从其双亲获得优先级，直到应用对其进行修改。Android中使用了linux中的优先级，然而java的优先级与linux的优先级有对应的关系。
 两种方式改变优先级：
+
     - `java.lang.Thread` 的 `setPriority(int priority)`
     - `android.os.Process` 的 `Process.setThreadPriority(int priority)`; `Process.setThreadPriority(int threadId, int priority)`
     

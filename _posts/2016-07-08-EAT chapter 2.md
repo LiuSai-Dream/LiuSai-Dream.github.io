@@ -59,30 +59,39 @@ Android中的锁机制，
 ##### Using the intrinsic lock
 
 - Method level that operates on the instrinsic lock of the enclosing object instance
+
 ```
 synchronized void changeState(){ ... }
 ```
+
 - Block-level that operators on the instrinsic lock of the enclosing object instance
+
 ```
 void changeState() {
     synchronized(this) { ... }
 }
 ```
+
 - Block-level with other object intrinsic lock of the enclosing object instance
+
 ```
 private final Object mLock = new Object()
 void changeState() {
     synchronized(mLock) { ... }
 ```
+
 - Method-level that operators on the intrinsic lock of the enclosing class instance
+
 ```
 synchronized static void changeState() {
     ...
 }
 ```
+
 > 注意在static方法上进行同步，实际上获取的是*class object*的内部锁而非*instance object*的内部锁。
 
 - Block-level that operators on the instrinsic lock of the enclosing class instance
+
 ```
 static void changeState(){
     synchronized(this.getClass()) { ... } 

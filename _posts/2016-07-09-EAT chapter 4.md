@@ -89,6 +89,7 @@ Android对UI线程和work线程之间的通信有自己的一套机制。UI线�
 然而消费者线程可以利用空闲时间处理其他的任务。
 
 通过实现`MessageQueue.IdleHandler`接口，可以让消费者线程在空闲的时候执行该接口的内容。可通过如下方法设置：
+
 ```
 // Get the message queue of the current thread
 MessageQueue mq = Looper.myQueue();
@@ -100,12 +101,15 @@ mq.addIdleHandler(idleHandler);
 // Unregister an idle listener
 mq.removeIdleHandler(idleHandler);
 ```
+
 其接口为：
+
 ```
 interface IdleHandler {
     boolean queueIdle();
 }
 ```
+
 当messagequeue检测到空闲时间时， 会调用所有注册（是如何执行的？实际上是顺序执行？）的`IdleHandler`。
 此外应该避免在`queueIdle()`中执行长时间的操作，因为这样会延时后面的message的处理。
 
@@ -178,6 +182,7 @@ message状态被清空，实例回到**message pool**。由Looper负责回收mes
 #### Looper
 
 为所在的线程运行一个message loop。普通的线程并没有与之相关的loop，在线程中调用`prepare()`创建一个loop，然后调用`loop()`来处理message，直到loop被停止。
+
 ```
 class ConsumerThread extends Thread {
     public void run() {
@@ -228,11 +233,14 @@ Handler既负责在**生产者线程**把message插入队列，同时负责在**
 `Handler`直接相关`Looper`。没有`Looper`，`Handler`无法进行工作。因此`Handler`实例需要在构造的时候与`Looper`进行绑定。
 
 - 隐式的与**当前线程**的Looper绑定
+
     ```
     new Handler();
     new Handler(Handler.Callback);
     ```
+
 - 显式的进行绑定
+
     ```
     new Handler(Looper);
     new Handler(Looper, Handler.Callback);
@@ -261,12 +269,15 @@ Message obtainMessage(int what, Object obj);
 根据message的类型，Handler可以使用不同的方式把message插入到队列中。*Task message*通过前缀`post`方法来插入，*Data message*通过前缀`send`方法来插入。
 
 - Add a task to the message queue:
+
     ```
     boolean post(Runnable r) // Runnable被封装为message
     
     ...
     ```
+
 - Add a data object to the message queue:
+
     ```
     boolean sendMessage(Message msg)
     
@@ -304,6 +315,7 @@ Message的type决定了其处理方式：
 
 - *Task messages*： Task message 只包含一个*Runnable*，不包括数据。因此处理的过程定义在*Runnable*的run方法中，**该run方法自动在消费者线程上执行，而不通过`Handler.handleMessage()`方法**
 - *Data Message*：message含有数据，Handler接收数据并处理。消费者线程通过`Handler.handleMessage(Message msg)`方法来处理。有两种方式来处理：1. 在创建Handler的时候定义`handleMessage`。该方法必须在message queue（在`Looper.prepare()`之后）可用的时候（在`Looper.loop()`之前）就要定义到（主要是要抓住，Looper/MessageQueue**产生**，MessageQueue**能够接受数据**之间的这个空隙把处理函数给定义好）。其模板如下：
+
 ```
 class ConsumerThread extends Thread{
     Handler mHandler;
@@ -317,13 +329,17 @@ class ConsumerThread extends Thread{
     }
 }
 ```
+
 2. 另外一种方法就是使用`Handler.Callback`接口来扩展`Handler`类。
+
 ```
 public interface Callback {
     public boolean handleMessage(Message msg);
 }
 ```
+
 有了这个接口，就没有必要继承`Handler`类，相反，可以把`Callback`的实现传递给`Handler`构造函数，然后就能接受和分发消息处理：
+
 ```
 public class HandlerCallbackActivity extends Activity implements Handler.Callback {
 
@@ -345,6 +361,7 @@ public class HandlerCallbackActivity extends Activity implements Handler.Callbac
 如果该message已经处理完成，`Callback.HandleMessage`应该返回true，这样后续不再处理该message。如果返回false，那么该message会继续传递到`Hanlder.handleMessage`处理。
 
 注意`Callback`没有override `Hanlder.handleMessage`，它只是对message的**预处理**。`Callback`预处理能够在`Handler`处理它们之前**中断和改变**message。下面示例了如何使用`Callback`来中断message。
+
 ```
 public class HandlerCallbackActivity extends Activity implements Handler.Callback {
     
@@ -396,16 +413,19 @@ public class HandlerCallbackActivity extends Activity implements Handler.Callbac
 对应的方法：
 
 - remove task message
+
 ```
 removeCallbacks(Runnable r)
 removeCallbacks(Runnable r, Object token)
 ```
 - remove data message
+
 ```
 removeMessages(int what)
 removeMessages(int what, Object o)
 ```
 - remove task and data message
+
 ```
 removeCallbacksAndMessages(Object token)
 ```
@@ -427,11 +447,14 @@ message的处理信息可以打印到log。可以从`Looper`类中开启消息�
 UI线程可以当作一个消费者，其他的线程可以作为生产者，但是此时任务不能过于繁重。
 
 通过全局可以获取的`Looper`来向UI线程发送message。 （**注意这种方法只能够处理task message，不能够处理data message**）
+
 ```
 Runnable task = new Runnable(){ };
 new Handler(Looper.getMainLooper()).post(task);
 ```
+
 当然UI线程也可以向自己发送消息，此时该message会**被很快的处理**。例如：
+
 ```
 // Method called on UI thread
 private void postFromUiThreadToUiThread () {
@@ -440,7 +463,9 @@ private void postFromUiThreadToUiThread () {
     // and is executed **before the posted message**也就是说上面那句尽管调用了post，但是**并不会立即执行**，因为此处的代码会比上面的执行更早
 }
 ```
+
 然而，在UI线程中发送的**task message**，可以**不通过传递直接由UI线程处理**，通过`Activity.runOnUiThread(Runnable)`，例如：
+
 ```
 // Method called on UI Thread
 private void postFromUiThreadToUiThread() {
@@ -450,7 +475,9 @@ private void postFromUiThreadToUiThread() {
 }
 
 ```
+
 **如果在UI以外的线程调用，该message会插入到队列中**（前面举例是在UI线程内调用），**`runOnUiThread`方法只能在`Activity`实例上执行**。但是该行为可以通过跟踪UI线程的ID同样能实现。例如：
+
 ```
 public class EatApplication extends Application {
     private long mUiThreadId;
@@ -471,5 +498,6 @@ public class EatApplication extends Application {
     }
 }
 ```
+
 然而这种方法由于无法访问到activity中的UI部件，仍然不能更新UI，只是在UI线程上执行，意义不大。
 
