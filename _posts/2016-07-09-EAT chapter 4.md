@@ -301,6 +301,7 @@ Message obtainMessage(int what, Object obj);
 尽管可以指定*delay*和*uptime*，但是实际的执行时间仍然是不确定的，由于message的处理是顺序的，依赖于已有的message的执行进度和操作系统调度。
 
 插入操作并不是失败安全的，其可能遇到的错误：
+
 | Failure | Error response | Typical application problem |
 | --------- | :------------: | :-------------: |
 | Message has no Handler  | RuntimeException | Message was created from a Message.obtain() method without a specifed Handler |
