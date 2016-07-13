@@ -12,6 +12,7 @@ category: Android
 ### Fundamentals
 
 `HandlerThread`是一个具有*message queue*，*Thread*， *Looper*的线程。但是并没有用来处理消息的*handler*。它的构建和开启与普通的线程一样。
+
 ```
 HandlerThread handlerThread = new HandlerThread("HandlerThread");
 handlerThread.start();
@@ -73,14 +74,20 @@ public class MyHandlerThread extends HandlerThread {
 其生命周期包括的状态集合：
 
 1. *Creation*：
+
 ```
 HandlerThread(String name)
 HandlerThread(String name, int priority)
 ```
+
 其中的*priority*可以是`Process.THREAD_PRIORITY_BACKGROUND`
+
 2. *Execution*：当处理消息的时候，`HandlerThread`是活动的（只要Looper可以dispatch消息到线程中）。该*分发机制*在线程启动的时候通过`HandlerThread.start`进行set up，在`HandlerThread.getLooper()`返回或调用`onLooperPrepared`的时候ready。`getLooper()`会阻塞直到`Looper`准备好。
+
 3. *Reset*：*message queue*可以被重置，在queue中的消息被清空了，但是不会影响正在执行的消息。但是线程仍然是活跃的，并且可以处理新的消息。
+
 4. *Termination*：通过`quit`或者`quitSafely`来终止`HandlerThread`,也就意味着`Looper`的终止。也可以发送*interrupt*到*HandlerThread*来取消当前处理的*message*。
+
 ```
 public void stopHandlerThread(HandlerThread handlerThread) {
     handlerThread.quit();
@@ -89,6 +96,7 @@ public void stopHandlerThread(HandlerThread handlerThread) {
 ```
 
 也可以通过发送一个*finalization*任务到*Handler*来*quit Looper*：
+
 ```
 handler.post(new Runnable() {
     public void run() {
@@ -122,11 +130,14 @@ handler.post(new Runnable() {
 #### Conditional Task Insertion
 
 `HandlerThread`能够很好的对*queue*中的*Message*进行控制。
+
 ```
 handler.hasMessages(int what)
 handler.hasMessages(int what, Object tag)
 ```
+
 有条件的消息插入保证了不会再消息队列中插入已经有的消息。
+
 ```
 if (handler.hasMessages(MESSAGE_WHAT) == false) {
     handler.sendEmptyMessage(MESSAGE_WHAT);
